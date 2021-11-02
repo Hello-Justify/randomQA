@@ -4,7 +4,7 @@ import random
 import numpy as np
 from torch.utils.data import Dataset, DataLoader
 
-from utils import set_seed, get_img, random_modules, numpy_random_init
+from utils import set_seed, get_img, random_modules, numpy_init_dict
 
 # default random module is random
 if len(sys.argv) > 1:
@@ -12,8 +12,8 @@ if len(sys.argv) > 1:
 else:
     module_name = "random"
 
-if module_name == "numpy" and  len(sys.argv) > 2 and sys.argv[2].lower() == 'good':
-    worker_init_fn = numpy_random_init
+if module_name == "numpy" and  len(sys.argv) > 2:
+    worker_init_fn = numpy_init_dict.get(sys.argv[2].lower(), None)
 else:
     worker_init_fn = None
 
@@ -63,7 +63,9 @@ if __name__ == '__main__':
     set_seed(0)
     
     dataset = DemoDataset()
+    # if sys.argv[2].lower() == fix, shuffle should be False
     loader = DataLoader(dataset, shuffle=True, batch_size=4, num_workers=2, worker_init_fn=worker_init_fn)
-
-    for _ in loader:
-        pass
+    
+    for _ in range(3):
+        for _ in loader:
+            pass

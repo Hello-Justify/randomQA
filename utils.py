@@ -27,3 +27,11 @@ def numpy_random_init(worker_id):
     base_seed    = process_seed - worker_id
     ss  = np.random.SeedSequence([worker_id, base_seed])
     np.random.seed(ss.generate_state(4))
+
+def numpy_fix_init(worker_id):
+    np.random.seed(2<<16 + worker_id)
+
+numpy_init_dict = {
+    "random": numpy_random_init,
+    "fix"   : numpy_fix_init
+}

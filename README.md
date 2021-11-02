@@ -22,7 +22,11 @@ python cur_loader.py
 
 python cur_loader.py numpy
 
-python cur_loader.py numpy good
+# for train
+python cur_loader.py numpy random
+
+# for validation and test, shuffle should be False
+python cur_loader.py numpy fix
 
 python cur_loader.py torch
 ```
