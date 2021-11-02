@@ -4,7 +4,7 @@ import random
 import numpy as np
 from torch.utils.data import Dataset, DataLoader
 
-from utils import set_seed, get_img, random_modules
+from utils import set_seed, get_img, random_modules, numpy_random_init
 
 # default random module is random
 if len(sys.argv) > 1:
@@ -12,11 +12,17 @@ if len(sys.argv) > 1:
 else:
     module_name = "random"
 
+if module_name == "numpy" and  len(sys.argv) > 2 and sys.argv[2].lower() == 'good':
+    worker_init_fn = numpy_random_init
+else:
+    worker_init_fn = None
+
 try:
     func_randint = random_modules[module_name]
 except KeyError:
     print(f"KeyError: {module_name} not in [random, numpy, torch]")
     exit()
+
 
 class DemoDataset(Dataset):
     def __init__(self, patch_size=128):
@@ -57,7 +63,7 @@ if __name__ == '__main__':
     set_seed(0)
     
     dataset = DemoDataset()
-    loader = DataLoader(dataset, shuffle=True, batch_size=4, num_workers=2)
+    loader = DataLoader(dataset, shuffle=True, batch_size=4, num_workers=2, worker_init_fn=worker_init_fn)
 
     for _ in loader:
         pass

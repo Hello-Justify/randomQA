@@ -22,5 +22,7 @@ python cur_loader.py
 
 python cur_loader.py numpy
 
+python cur_loader.py numpy good
+
 python cur_loader.py torch
 ```
