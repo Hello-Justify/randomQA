@@ -1,17 +1,22 @@
+import sys
 import torch
 import random
 import numpy as np
 from torch.utils.data import Dataset, DataLoader
 
-def set_seed(seed):
-    random.seed(seed)
-    np.random.seed(seed)
-    torch.manual_seed(seed)
-    torch.cuda.manual_seed_all(seed)
+from utils import set_seed, get_img, random_modules
 
-def get_img(name):
-    # return the image with shape(height, width) like cv2.imread(name, 0)
-    return np.zeros((1080, 1920), dtype='uint8')
+# default random module is random
+if len(sys.argv) > 1:
+    module_name = sys.argv[1].lower()
+else:
+    module_name = "random"
+
+try:
+    func_randint = random_modules[module_name]
+except KeyError:
+    print(f"KeyError: {module_name} not in [random, numpy, torch]")
+    exit()
 
 class DemoDataset(Dataset):
     def __init__(self, patch_size=128):
@@ -31,10 +36,12 @@ class DemoDataset(Dataset):
         W = 1920
 
         # to get an even number, we use "//2*2"
-        xx = random.randint(0, H - self.ps * 2) // 2 * 2
-        yy = random.randint(0, W - self.ps * 2) // 2 * 2
+        # choose module (random | numpy | torch)
+        xx = func_randint(0, H - self.ps * 2 + 1) // 2 * 2
+        yy = func_randint(0, W - self.ps * 2 + 1) // 2 * 2
 
-        print(f"index: {index:2d}, xx: {xx:4d}, yy: {yy:4d}")
+        # log
+        print(f"index: {index:1d}, xx: {xx:4d}, yy: {yy:4d}")
 
         input_full  = get_img(self.img_ids[index])
         input_patch = input_full[xx:xx+self.ps*2,yy:yy+self.ps*2]
@@ -44,6 +51,7 @@ class DemoDataset(Dataset):
 
     def __len__(self):
         return len(self.img_ids)
+
 
 if __name__ == '__main__':
     set_seed(0)

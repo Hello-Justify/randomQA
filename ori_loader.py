@@ -1,10 +1,10 @@
 import torch
 import numpy as np
 
+from utils import set_seed, get_img
 
-def get_img(name):
-    # return the image with shape(height, width) like cv2.imread(name, 0)
-    return np.zeros((1080, 1920), dtype='uint8')
+
+set_seed(0)
 
 # read image list from txt file
 with open('data_list.txt') as f:
@@ -30,6 +30,9 @@ for batch_id in range(int(train_data_length/batch_size)):
         # to get an even number, we use "//2*2"
         xx = np.random.randint(0, H - patch_size * 2 + 1) // 2 * 2
         yy = np.random.randint(0, W - patch_size * 2 + 1) // 2 * 2
+
+        # log
+        print(f"index: {index:1d}, xx: {xx:4d}, yy: {yy:4d}")
 
         input_full  = get_img(img_ids[index])
 
