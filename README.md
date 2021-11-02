@@ -1,6 +1,6 @@
 <!-- ABOUT THE PROJECT -->
 # Random in multiprocessing
-> When you use numpy.random with torch.utils.data.DataSet, something bad happens.
+> When you use numpy.random with torch.utils.data.Dataset, something bad happens.
 
 
 ## Prerequisites
